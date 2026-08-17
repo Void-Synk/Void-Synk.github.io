@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Climbing · Sci-Fi Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== ROOT ===== */
+        :root {
+            --bg-base: #070b16;
+            --bg-card: rgba(12, 22, 40, 0.88);
+            --bg-card-hover: rgba(18, 32, 52, 0.96);
+            --border-glow: rgba(0, 229, 255, 0.35);
+            --neon-cyan: #00e5ff;
+            --neon-purple: #b388ff;
+            --neon-green: #69f0ae;
+            --neon-pink: #ff4081;
+            --neon-gold: #ffd740;
+            --neon-orange: #ff9100;
+            --text-primary: #e8f5f9;
+            --text-secondary: #b0c4ce;
+            --text-muted: #6a8a9a;
+            --shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            --shadow-glow: 0 0 40px rgba(0, 229, 255, 0.15);
+            --transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            --font-heading: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+            --radius: 24px;
+        }
+
+        /* ===== RESET ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-base);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* ===== BACKGROUND ===== */
+        .bg-elements {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse at 15% 40%, rgba(0, 229, 255, 0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 25%, rgba(179, 136, 255, 0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 85%, rgba(255, 64, 129, 0.04) 0%, transparent 50%);
+        }
+
+        .bg-elements::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 229, 255, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, 0.06) 1px, transparent 1px);
+            background-size: 55px 55px;
+            animation: gridPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes gridPulse {
+            0%,
+            100% {
+                opacity: 0.25;
+            }
+            50% {
+                opacity: 0.55;
+            }
+        }
+
+        .stars {
+            position: absolute;
+            inset: 0;
+        }
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--dur, 3s) ease-in-out infinite;
+        }
+        @keyframes twinkle {
+            0%,
+            100% {
+                opacity: 0.15;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.85;
+                transform: scale(1.4);
+            }
+        }
+
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.12;
+        }
+        .nebula-1 {
+            width: 450px;
+            height: 450px;
+            background: var(--neon-purple);
+            top: -120px;
+            left: -120px;
+        }
+        .nebula-2 {
+            width: 550px;
+            height: 550px;
+            background: var(--neon-cyan);
+            bottom: -160px;
+            right: -160px;
+        }
+        .nebula-3 {
+            width: 300px;
+            height: 300px;
+            background: var(--neon-pink);
+            top: 50%;
+            left: 60%;
+            transform: translate(-50%, -50%);
+            filter: blur(90px);
+            opacity: 0.05;
+        }
+
+        /* ===== PRESENTATION ===== */
+        .presentation {
+            position: relative;
+            z-index: 10;
+            width: 94vw;
+            max-width: 1180px;
+            height: 90vh;
+            max-height: 840px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow), var(--shadow-glow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-glow);
+            backdrop-filter: blur(18px);
+            transition: box-shadow 0.6s ease;
+        }
+        .presentation:hover {
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 50px rgba(0, 229, 255, 0.2);
+        }
+
+        /* ===== PROGRESS HEADER ===== */
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 28px;
+            background: rgba(0, 0, 0, 0.45);
+            border-bottom: 1px solid var(--border-glow);
+            flex-shrink: 0;
+            backdrop-filter: blur(8px);
+        }
+
+        .title-mini {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 0.78rem;
+            color: var(--neon-cyan);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .title-mini .badge {
+            display: inline-block;
+            background: rgba(0, 229, 255, 0.15);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 0.6rem;
+            color: var(--neon-cyan);
+            letter-spacing: 1px;
+        }
+
+        .progress-bar-container {
+            flex: 1;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 0 18px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+            border-radius: 4px;
+            transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            width: 0%;
+            box-shadow: 0 0 16px rgba(0, 229, 255, 0.5);
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+        }
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        .progress-dot.active {
+            background: var(--neon-cyan);
+            border-color: #fff;
+            transform: scale(1.5);
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+        .progress-dot.visited {
+            background: rgba(0, 229, 255, 0.45);
+            border-color: rgba(0, 229, 255, 0.7);
+        }
+        .progress-dot:hover {
+            transform: scale(1.35);
+            box-shadow: 0 0 14px var(--neon-cyan);
+        }
+
+        /* ===== SLIDES ===== */
+        .slides-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            padding: 38px 50px 30px 50px;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateX(40px) scale(0.97);
+            transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+            visibility: hidden;
+            scroll-behavior: smooth;
+            background: rgba(7, 11, 22, 0.3);
+        }
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            pointer-events: all;
+            visibility: visible;
+        }
+        .slide.exit-left {
+            opacity: 0;
+            transform: translateX(-40px) scale(0.97);
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 5px;
+        }
+        .slide::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+            border-radius: 10px;
+            box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+        }
+        .slide::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 30px;
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 50%;
+            width: 46px;
+            height: 46px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
+            transition: var(--transition);
+            backdrop-filter: blur(6px);
+        }
+        .scroll-top-btn.show {
+            display: flex;
+        }
+        .scroll-top-btn:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            transform: translateY(-4px);
+            box-shadow: 0 0 30px var(--neon-cyan);
+        }
+
+        /* ===== SLIDE CONTENT ===== */
+        .slide-content {
+            max-width: 920px;
+            margin: 0 auto;
+            padding-bottom: 10px;
+        }
+
+        .slide-title {
+            font-family: var(--font-heading);
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+        .slide-title::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 75px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            border-radius: 4px;
+            box-shadow: 0 0 14px var(--neon-cyan);
+        }
+
+        .slide-subtitle {
+            font-family: var(--font-body);
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            font-style: italic;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            padding-top: 6px;
+        }
+
+        /* ===== QUOTE SLIDE ===== */
+        .quote-slide {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            min-height: 480px;
+        }
+        .quote-mark {
+            font-family: var(--font-heading);
+            font-size: 5.5rem;
+            color: var(--neon-gold);
+            line-height: 1;
+            text-shadow: 0 0 30px rgba(255, 215, 64, 0.6);
+        }
+        .quote-text {
+            font-family: var(--font-heading);
+            font-size: 1.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            max-width: 720px;
+            line-height: 1.6;
+            margin: 20px 0 14px 0;
+            font-style: italic;
+            text-shadow: 0 0 14px rgba(0, 229, 255, 0.25);
+        }
+        .quote-author {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--text-muted);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        .quote-emoji {
+            font-size: 3.8rem;
+            animation: treeGrow 1.8s ease-out forwards;
+            margin-top: 16px;
+        }
+        @keyframes treeGrow {
+            from {
+                transform: scale(0) rotate(-12deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) rotate(0);
+                opacity: 1;
+            }
+        }
+        .quote-tagline {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--neon-cyan);
+            margin-top: 14px;
+            text-shadow: 0 0 14px var(--neon-cyan);
+            letter-spacing: 1px;
+        }
+        .quote-meta {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
+
+        /* ===== POET CARD ===== */
+        .poet-card {
+            background: rgba(12, 22, 40, 0.9);
+            border-left: 6px solid var(--neon-purple);
+            border-radius: var(--radius);
+            padding: 32px 38px;
+            margin: 22px 0;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.45), 0 0 18px rgba(179, 136, 255, 0.15);
+            backdrop-filter: blur(6px);
+            border-top: 1px solid rgba(179, 136, 255, 0.25);
+            border-right: 1px solid rgba(179, 136, 255, 0.25);
+        }
+        .poet-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.7rem;
+            color: var(--neon-purple);
+            margin-bottom: 14px;
+            font-weight: 700;
+            text-shadow: 0 0 14px rgba(179, 136, 255, 0.4);
+        }
+        .poet-card p {
+            font-family: var(--font-body);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #ccd8e0;
+            margin-bottom: 12px;
+            letter-spacing: 0.2px;
+        }
+        .poet-card .poet-quote {
+            font-style: italic;
+            color: var(--neon-cyan);
+            font-size: 1.1rem;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px dashed rgba(179, 136, 255, 0.25);
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+        }
+
+        /* ===== POEM DESCRIPTION CARD ===== */
+        .poem-desc-card {
+            background: rgba(12, 22, 40, 0.9);
+            border-left: 6px solid var(--neon-gold);
+            border-radius: var(--radius);
+            padding: 34px 40px;
+            margin: 22px 0;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.45), 0 0 18px rgba(255, 215, 64, 0.12);
+            backdrop-filter: blur(6px);
+            border-top: 1px solid rgba(255, 215, 64, 0.2);
+            border-right: 1px solid rgba(255, 215, 64, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .poem-desc-card::before {
+            content: '🌳';
+            position: absolute;
+            top: -18px;
+            right: -8px;
+            font-size: 7rem;
+            opacity: 0.04;
+            transform: rotate(-10deg);
+        }
+        .poem-desc-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.7rem;
+            color: var(--neon-gold);
+            margin-bottom: 18px;
+            font-weight: 700;
+            text-shadow: 0 0 14px rgba(255, 215, 64, 0.3);
+        }
+        .poem-desc-card .desc-text {
+            font-family: var(--font-body);
+            font-size: 1.08rem;
+            line-height: 1.9;
+            color: #ccd8e0;
+            letter-spacing: 0.3px;
+        }
+        .poem-desc-card .desc-text strong {
+            color: var(--neon-cyan);
+            font-weight: 600;
+        }
+        .poem-desc-card .desc-highlight {
+            background: rgba(0, 229, 255, 0.07);
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin-top: 18px;
+            border-left: 4px solid var(--neon-cyan);
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        .poem-desc-card .symbol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+        .poem-desc-card .symbol-item {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 14px 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .poem-desc-card .symbol-item .sym {
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .poem-desc-card .symbol-item .sym-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .poem-desc-card .symbol-item .sym-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== VOCAB GRID ===== */
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 22px;
+            margin-top: 22px;
+        }
+        .vocab-card {
+            background: rgba(10, 20, 36, 0.92);
+            border-radius: 18px;
+            padding: 22px 24px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            transition: var(--transition);
+            backdrop-filter: blur(6px);
+        }
+        .vocab-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 0 34px rgba(0, 229, 255, 0.2);
+            border-color: var(--neon-cyan);
+        }
+        .vocab-card .meaning {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .vocab-card .meaning strong {
+            color: var(--text-primary);
+        }
+        .vocab-card .answer {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            opacity: 0;
+            transform: translateY(12px) scale(0.95);
+            transition: var(--transition);
+            letter-spacing: 1px;
+            text-shadow: 0 0 14px rgba(0, 229, 255, 0.5);
+        }
+        .vocab-card .answer.revealed {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .vocab-card .reveal-btn {
+            margin-top: 12px;
+            padding: 7px 20px;
+            background: rgba(0, 229, 255, 0.12);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            transition: var(--transition);
+            text-transform: uppercase;
+            font-family: var(--font-heading);
+        }
+        .vocab-card .reveal-btn:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 24px var(--neon-cyan);
+        }
+
+        /* ===== MCQ ===== */
+        .mcq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 18px;
+        }
+        .mcq-item {
+            background: rgba(10, 20, 36, 0.92);
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.35);
+            border-left: 5px solid var(--neon-cyan);
+            transition: var(--transition);
+            backdrop-filter: blur(6px);
+            border-top: 1px solid rgba(0, 229, 255, 0.15);
+            border-right: 1px solid rgba(0, 229, 255, 0.15);
+        }
+        .mcq-item:hover {
+            box-shadow: 0 0 28px rgba(0, 229, 255, 0.12);
+        }
+        .mcq-item .question {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+            letter-spacing: 0.3px;
+        }
+        .mcq-item .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .mcq-item .option {
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 22px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-weight: 400;
+        }
+        .mcq-item .option:hover {
+            background: rgba(0, 229, 255, 0.08);
+            border-color: var(--neon-cyan);
+            color: var(--text-primary);
+        }
+        .mcq-item .option.correct {
+            background: rgba(105, 240, 174, 0.18);
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            font-weight: 600;
+            animation: correctPulse 0.5s ease-out;
+            box-shadow: 0 0 14px rgba(105, 240, 174, 0.35);
+        }
+        .mcq-item .option.incorrect {
+            background: rgba(255, 64, 129, 0.18);
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            text-decoration: line-through;
+            animation: shake 0.5s ease-out;
+            box-shadow: 0 0 14px rgba(255, 64, 129, 0.35);
+        }
+        @keyframes correctPulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.06);
+                box-shadow: 0 0 24px var(--neon-green);
+            }
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-7px);
+            }
+            75% {
+                transform: translateX(7px);
+            }
+        }
+        .mcq-item .correct-answer {
+            font-size: 0.9rem;
+            color: var(--neon-green);
+            font-weight: 600;
+            opacity: 0;
+            transition: var(--transition);
+            margin-top: 6px;
+            text-shadow: 0 0 8px rgba(105, 240, 174, 0.5);
+        }
+        .mcq-item .correct-answer.show {
+            opacity: 1;
+        }
+
+        /* ===== Q&A ===== */
+        .qa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 18px;
+        }
+        .qa-item {
+            background: rgba(10, 20, 36, 0.92);
+            border-radius: 16px;
+            padding: 18px 24px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.35);
+            border-right: 5px solid var(--neon-gold);
+            transition: var(--transition);
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            border-top: 1px solid rgba(255, 215, 64, 0.15);
+            border-left: 1px solid rgba(255, 215, 64, 0.15);
+        }
+        .qa-item:hover {
+            box-shadow: 0 0 28px rgba(255, 215, 64, 0.08);
+        }
+        .qa-item .qa-question {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .qa-item .qa-question .q-icon {
+            color: var(--neon-gold);
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            text-shadow: 0 0 12px rgba(255, 215, 64, 0.5);
+        }
+        .qa-item .qa-answer {
+            margin-top: 10px;
+            padding: 14px 20px;
+            background: rgba(255, 215, 64, 0.04);
+            border-radius: 12px;
+            border-left: 4px solid var(--neon-gold);
+            font-size: 0.95rem;
+            color: #ccd8e0;
+            line-height: 1.7;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            padding: 0 20px;
+        }
+        .qa-item .qa-answer.open {
+            max-height: 400px;
+            opacity: 1;
+            padding: 14px 20px;
+        }
+        .qa-item .toggle-hint {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: var(--transition);
+        }
+
+        /* ===== CONCLUSION ===== */
+        .conclusion-icon {
+            font-size: 4.5rem;
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-14px);
+            }
+        }
+
+        .conclusion-quote {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            max-width: 700px;
+            line-height: 1.6;
+            margin: 16px 0;
+            font-style: italic;
+            text-shadow: 0 0 14px rgba(0, 229, 255, 0.2);
+        }
+
+        .conclusion-meta {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 18px;
+            letter-spacing: 2px;
+        }
+
+        /* ===== NAV ===== */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 28px;
+            border-top: 1px solid var(--border-glow);
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+        .nav-btn {
+            padding: 12px 30px;
+            border: 1px solid transparent;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            letter-spacing: 1.5px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+        }
+        .nav-btn.prev {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .nav-btn.prev:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(-4px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .nav-btn.next {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.18), rgba(179, 136, 255, 0.18));
+            color: var(--neon-cyan);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 24px rgba(0, 229, 255, 0.2);
+        }
+        .nav-btn.next:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            color: #000;
+            transform: translateX(4px);
+            box-shadow: 0 0 36px var(--neon-cyan);
+        }
+        .nav-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .slide-counter {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 820px) {
+            .presentation {
+                width: 96vw;
+                height: 92vh;
+                border-radius: 18px;
+            }
+            .slide {
+                padding: 22px 18px 18px 18px;
+            }
+            .slide-title {
+                font-size: 1.8rem;
+            }
+            .quote-text {
+                font-size: 1.4rem;
+            }
+            .poet-card,
+            .poem-desc-card {
+                padding: 24px 20px;
+            }
+            .poet-card p,
+            .poem-desc-card .desc-text {
+                font-size: 0.95rem;
+            }
+            .nav-buttons {
+                padding: 10px 14px;
+            }
+            .nav-btn {
+                padding: 9px 16px;
+                font-size: 0.75rem;
+            }
+            .vocab-grid {
+                grid-template-columns: 1fr;
+            }
+            .mcq-item .options {
+                flex-direction: column;
+                gap: 5px;
+            }
+            .progress-header {
+                padding: 8px 14px;
+            }
+            .progress-dot {
+                width: 8px;
+                height: 8px;
+            }
+            .progress-bar-container {
+                margin: 0 8px;
+            }
+            .poem-desc-card .symbol-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+            .title-mini .badge {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slide {
+                padding: 16px 12px;
+            }
+            .slide-title {
+                font-size: 1.4rem;
+            }
+            .slide-title::after {
+                width: 50px;
+            }
+            .quote-text {
+                font-size: 1.1rem;
+            }
+            .quote-mark {
+                font-size: 3.8rem;
+            }
+            .poet-card h3,
+            .poem-desc-card h3 {
+                font-size: 1.3rem;
+            }
+            .nav-btn {
+                padding: 7px 12px;
+                font-size: 0.7rem;
+                letter-spacing: 0.5px;
+            }
+            .progress-dots {
+                gap: 4px;
+            }
+            .progress-dot {
+                width: 7px;
+                height: 7px;
+            }
+            .conclusion-quote {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== BACKGROUND ===== -->
+    <div class="bg-elements">
+        <div class="stars" id="starsContainer"></div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+        <div class="nebula nebula-3"></div>
+    </div>
+
+    <!-- ===== SCROLL TOP ===== -->
+    <button class="scroll-top-btn" id="scrollTopBtn" title="Scroll to top" aria-label="Scroll to top">↑</button>
+
+    <!-- ===== PRESENTATION ===== -->
+    <div class="presentation" id="presentation">
+
+        <!-- HEADER -->
+        <div class="progress-header">
+            <span class="title-mini">
+                ⚡ Climbing
+                <span class="badge">Grade 10</span>
+            </span>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-dots" id="progressDots">
+                <div class="progress-dot active" data-slide="0"></div>
+                <div class="progress-dot" data-slide="1"></div>
+                <div class="progress-dot" data-slide="2"></div>
+                <div class="progress-dot" data-slide="3"></div>
+                <div class="progress-dot" data-slide="4"></div>
+                <div class="progress-dot" data-slide="5"></div>
+                <div class="progress-dot" data-slide="6"></div>
+            </div>
+        </div>
+
+        <!-- SLIDES -->
+        <div class="slides-container" id="slidesContainer">
+
+            <!-- SLIDE 0: QUOTE -->
+            <div class="slide active" data-index="0">
+                <div class="quote-slide">
+                    <div class="quote-mark">“</div>
+                    <p class="quote-text">
+                        <span style="text-shadow:0 0 20px rgba(255,215,64,0.3);">"It is not the mountain we conquer, but ourselves."</span>
+                    </p>
+                    <p class="quote-author">— Sir Edmund Hillary</p>
+                    <div class="quote-emoji">🌳</div>
+                    <p class="quote-tagline">By: Samarpan Timsina </p>
+                    <p class="quote-meta">A Presentation on the Poem "Climbing" · Exercise Solutions</p>
+                </div>
+            </div>
+
+            <!-- SLIDE 1: ABOUT THE POET -->
+            <div class="slide" data-index="1">
+                <div class="slide-content">
+                    <h2 class="slide-title">About the Poet</h2>
+                    <p class="slide-subtitle">Amy Lowell — the voice behind the climb</p>
+                    <div class="poet-card">
+                        <h3>Amy Lowell (1874 – 1925)</h3>
+                        <p><strong>Amy Lowell</strong> was an American poet of the Imagist school, celebrated for her bold, vivid language and free-verse mastery. A leading figure in early 20th-century poetry, she championed precise imagery and emotional depth, often exploring nature, identity, and the human spirit.</p>
+                        <p>Beyond her own work, Lowell was a tireless editor and critic who helped launch the careers of other modernist poets. Though her unconventional style drew criticism, she remained fiercely passionate — a trailblazer who reshaped American poetry.</p>
+                        <p>Her poem <em>"Climbing"</em> exemplifies her signature style: rich metaphor, clear imagery, and a quiet yet powerful meditation on aspiration. Through the simple act of climbing a tree, she captures a universal truth about perseverance and the courage to reach higher.</p>
+                        <div class="poet-quote">
+                            "Poetry is the most concentrated form of verbal expression." — Amy Lowell
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 2: ABOUT THE POEM (no poem, only description) -->
+            <div class="slide" data-index="2">
+                <div class="slide-content">
+                    <h2 class="slide-title">About the Poem</h2>
+                    <p class="slide-subtitle">Understanding the journey upward</p>
+                    <div class="poem-desc-card">
+                        <h3>"Climbing" — A Deeper Look</h3>
+                        <div class="desc-text">
+                            <p><strong>"Climbing"</strong> is a beautifully crafted metaphorical poem that follows a speaker ascending an apple tree. On the surface, it tells the story of a child's determination to reach the top. But beneath that lies a profound allegory for the human journey toward our most cherished goals.</p>
+                            <br />
+                            <p>Each element of the poem carries symbolic weight:</p>
+                        </div>
+
+                        <div class="symbol-grid">
+                            <div class="symbol-item">
+                                <span class="sym">🌳</span>
+                                <span class="sym-label">Tree</span>
+                                <span class="sym-desc">Life's challenges</span>
+                            </div>
+                            <div class="symbol-item">
+                                <span class="sym">🌿</span>
+                                <span class="sym-label">Branches</span>
+                                <span class="sym-desc">Steps of progress</span>
+                            </div>
+                            <div class="symbol-item">
+                                <span class="sym">🍃</span>
+                                <span class="sym-label">Leaves</span>
+                                <span class="sym-desc">Obstacles we push through</span>
+                            </div>
+                            <div class="symbol-item">
+                                <span class="sym">🏔️</span>
+                                <span class="sym-label">Top</span>
+                                <span class="sym-desc">Achievement &amp; success</span>
+                            </div>
+                            <div class="symbol-item">
+                                <span class="sym">☀️</span>
+                                <span class="sym-label">Sky</span>
+                                <span class="sym-desc">Ultimate aspirations</span>
+                            </div>
+                            <div class="symbol-item">
+                                <span class="sym">🌍</span>
+                                <span class="sym-label">Earth</span>
+                                <span class="sym-desc">Where we started</span>
+                            </div>
+                        </div>
+
+                        <div class="desc-highlight">
+                            <strong>✨ Core Message:</strong> The poem is a powerful anthem of <strong>perseverance</strong> — the refusal to give up, no matter how thick the leaves or how high the climb. It reminds us that every great achievement begins with a single step, and that the view from the top is always worth the struggle.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 3: VOCABULARY -->
+            <div class="slide" data-index="3">
+                <div class="slide-content">
+                    <h2 class="slide-title">Section A: Vocabulary</h2>
+                    <p class="slide-subtitle">Find the word from the poem that matches each meaning — click to reveal!</p>
+                    <div class="vocab-grid">
+                        <div class="vocab-card" data-answer="glint">
+                            <p class="meaning"><strong>a.</strong> A small flash of light, especially a reflected one</p>
+                            <div class="answer" id="vocab-ans-0">glint</div>
+                            <button class="reveal-btn" onclick="revealVocab(0)">Reveal</button>
+                        </div>
+                        <div class="vocab-card" data-answer="bough">
+                            <p class="meaning"><strong>b.</strong> Main branch of a tree</p>
+                            <div class="answer" id="vocab-ans-1">bough</div>
+                            <button class="reveal-btn" onclick="revealVocab(1)">Reveal</button>
+                        </div>
+                        <div class="vocab-card" data-answer="turret">
+                            <p class="meaning"><strong>c.</strong> A little tower of a building or a castle</p>
+                            <div class="answer" id="vocab-ans-2">turret</div>
+                            <button class="reveal-btn" onclick="revealVocab(2)">Reveal</button>
+                        </div>
+                        <div class="vocab-card" data-answer="stair">
+                            <p class="meaning"><strong>d.</strong> A set of steps leading from one floor to another</p>
+                            <div class="answer" id="vocab-ans-3">stair</div>
+                            <button class="reveal-btn" onclick="revealVocab(3)">Reveal</button>
+                        </div>
+                        <div class="vocab-card" data-answer="marvelous">
+                            <p class="meaning"><strong>e.</strong> Causing great wonder; extraordinary</p>
+                            <div class="answer" id="vocab-ans-4">marvelous</div>
+                            <button class="reveal-btn" onclick="revealVocab(4)">Reveal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 4: MCQ -->
+            <div class="slide" data-index="4">
+                <div class="slide-content">
+                    <h2 class="slide-title">Section B: Multiple Choice</h2>
+                    <p class="slide-subtitle">Click an option to see if it's correct!</p>
+                    <div class="mcq-list">
+                        <div class="mcq-item" data-correct="ii">
+                            <p class="question">a. What does the speaker view from the branch of the tree?</p>
+                            <div class="options">
+                                <span class="option" data-opt="i" onclick="selectOption(this, 'i', 'ii', 0)" tabindex="0" role="button">i. the sky</span>
+                                <span class="option" data-opt="ii" onclick="selectOption(this, 'ii', 'ii', 0)" tabindex="0" role="button">ii. the town</span>
+                                <span class="option" data-opt="iii" onclick="selectOption(this, 'iii', 'ii', 0)" tabindex="0" role="button">iii. the earth</span>
+                            </div>
+                            <p class="correct-answer" id="mcq-ans-0">✔ Correct Answer: ii. the town</p>
+                        </div>
+                        <div class="mcq-item" data-correct="ii">
+                            <p class="question">b. What aids the speaker to go up and up?</p>
+                            <div class="options">
+                                <span class="option" data-opt="i" onclick="selectOption(this, 'i', 'ii', 1)" tabindex="0" role="button">i. the apple tree</span>
+                                <span class="option" data-opt="ii" onclick="selectOption(this, 'ii', 'ii', 1)" tabindex="0" role="button">ii. the branches on the tree</span>
+                                <span class="option" data-opt="iii" onclick="selectOption(this, 'iii', 'ii', 1)" tabindex="0" role="button">iii. a stair bought for her support</span>
+                            </div>
+                            <p class="correct-answer" id="mcq-ans-1">✔ Correct Answer: ii. the branches on the tree</p>
+                        </div>
+                        <div class="mcq-item" data-correct="iii">
+                            <p class="question">c. What does the speaker compare the glow of a dome with?</p>
+                            <div class="options">
+                                <span class="option" data-opt="i" onclick="selectOption(this, 'i', 'iii', 2)" tabindex="0" role="button">i. a turret</span>
+                                <span class="option" data-opt="ii" onclick="selectOption(this, 'ii', 'iii', 2)" tabindex="0" role="button">ii. a spire</span>
+                                <span class="option" data-opt="iii" onclick="selectOption(this, 'iii', 'iii', 2)" tabindex="0" role="button">iii. sea foam</span>
+                            </div>
+                            <p class="correct-answer" id="mcq-ans-2">✔ Correct Answer: iii. sea foam</p>
+                        </div>
+                        <div class="mcq-item" data-correct="ii">
+                            <p class="question">d. Which of the following statements is true?</p>
+                            <div class="options">
+                                <span class="option" data-opt="i" onclick="selectOption(this, 'i', 'ii', 3)" tabindex="0" role="button">i. The speaker used to climb onto the tree top.</span>
+                                <span class="option" data-opt="ii" onclick="selectOption(this, 'ii', 'ii', 3)" tabindex="0" role="button">ii. The speaker is sure to get to the top now.</span>
+                                <span class="option" data-opt="iii" onclick="selectOption(this, 'iii', 'ii', 3)" tabindex="0" role="button">iii. The leaves will prevent her from going higher.</span>
+                            </div>
+                            <p class="correct-answer" id="mcq-ans-3">✔ Correct Answer: ii. The speaker is sure to get to the top now.</p>
+                        </div>
+                        <div class="mcq-item" data-correct="i">
+                            <p class="question">e. Which statement carries the message of the poem?</p>
+                            <div class="options">
+                                <span class="option" data-opt="i" onclick="selectOption(this, 'i', 'i', 4)" tabindex="0" role="button">i. We should not give up in the middle of any goal.</span>
+                                <span class="option" data-opt="ii" onclick="selectOption(this, 'ii', 'i', 4)" tabindex="0" role="button">ii. Be satisfied with what you have at the moment.</span>
+                                <span class="option" data-opt="iii" onclick="selectOption(this, 'iii', 'i', 4)" tabindex="0" role="button">iii. We cannot enter heaven without a staircase.</span>
+                            </div>
+                            <p class="correct-answer" id="mcq-ans-4">✔ Correct Answer: i. We should not give up in the middle of any goal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 5: Q&A -->
+            <div class="slide" data-index="5">
+                <div class="slide-content">
+                    <h2 class="slide-title">Section C: Questions &amp; Answers</h2>
+                    <p class="slide-subtitle">Click each question to reveal the answer.</p>
+                    <div class="qa-list">
+                        <div class="qa-item" onclick="toggleQA(this)" tabindex="0" role="button">
+                            <div class="qa-question">
+                                <span class="q-icon">Q1.</span>
+                                <span>Why does the speaker want to climb on the tree?</span>
+                            </div>
+                            <div class="qa-answer">
+                                <strong>Answer:</strong> The speaker wants to climb the tree to see the town shining up there — a symbol of her dreams and aspirations.
+                            </div>
+                            <p class="toggle-hint">👆 Click to reveal answer</p>
+                        </div>
+                        <div class="qa-item" onclick="toggleQA(this)" tabindex="0" role="button">
+                            <div class="qa-question">
+                                <span class="q-icon">Q2.</span>
+                                <span>What things are shining brightly when viewed from above?</span>
+                            </div>
+                            <div class="qa-answer">
+                                <strong>Answer:</strong> A turret and a dome are shining brightly, described as "sparkling and bright, like white sea foam."
+                            </div>
+                            <p class="toggle-hint">👆 Click to reveal answer</p>
+                        </div>
+                        <div class="qa-item" onclick="toggleQA(this)" tabindex="0" role="button">
+                            <div class="qa-question">
+                                <span class="q-icon">Q3.</span>
+                                <span>Is it the first time the speaker has climbed the tree? How do you know?</span>
+                            </div>
+                            <div class="qa-answer">
+                                <strong>Answer:</strong> No, it is not the first time. She says, "Before, I have always had to stop, but today I am sure I shall reach the top," indicating she has attempted before.
+                            </div>
+                            <p class="toggle-hint">👆 Click to reveal answer</p>
+                        </div>
+                        <div class="qa-item" onclick="toggleQA(this)" tabindex="0" role="button">
+                            <div class="qa-question">
+                                <span class="q-icon">Q4.</span>
+                                <span>List words from the poem that describe light or brightness.</span>
+                            </div>
+                            <div class="qa-answer">
+                                <strong>Answer:</strong> shining, gleam, glint, glittering, flash, sparkling.
+                            </div>
+                            <p class="toggle-hint">👆 Click to reveal answer</p>
+                        </div>
+                        <div class="qa-item" onclick="toggleQA(this)" tabindex="0" role="button">
+                            <div class="qa-question">
+                                <span class="q-icon">Q5.</span>
+                                <span>What do the sky and the earth symbolise in the poem?</span>
+                            </div>
+                            <div class="qa-answer">
+                                <strong>Answer:</strong> The sky represents the ultimate goal or destination — our highest aspirations. The earth represents the starting point and the journey itself. Together they emphasize the sense of accomplishment that comes with reaching the top.
+                            </div>
+                            <p class="toggle-hint">👆 Click to reveal answer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 6: CONCLUSION (no "Presentation by") -->
+            <div class="slide" data-index="6">
+                <div class="quote-slide">
+                    <div class="conclusion-icon">🚀</div>
+                    <h2 style="font-size:2.2rem;font-weight:700;color:var(--neon-cyan);margin:10px 0;font-family:var(--font-heading);text-shadow:0 0 24px var(--neon-cyan);">
+                        Thank You!
+                    </h2>
+                    <p class="conclusion-quote">
+                        "Never stop climbing.<br />The view from the top is always worth the climb."
+                    </p>
+                    <p class="conclusion-meta">Grade 10 English · Poem: "Climbing" by Amy Lowell</p>
+                    <div style="margin-top:22px;display:flex;gap:16px;justify-content:center;font-size:2.2rem;opacity:0.6;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- NAV -->
+        <div class="nav-buttons">
+            <button class="nav-btn prev" id="prevBtn" onclick="changeSlide(-1)" disabled>
+                ← Previous
+            </button>
+            <span class="slide-counter" id="slideCounter">1 / 7</span>
+            <button class="nav-btn next" id="nextBtn" onclick="changeSlide(1)">
+                Next →
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ===== SCRIPT ===== -->
+    <script>
+        // ===== STATE =====
+        let currentSlide = 0;
+        const totalSlides = 7;
+        let slideHistory = [true, false, false, false, false, false, false];
+
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.progress-dot');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideCounter = document.getElementById('slideCounter');
+        const progressBar = document.getElementById('progressBar');
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        const starsContainer = document.getElementById('starsContainer');
+
+        // ===== STARS =====
+        function generateStars() {
+            for (let i = 0; i < 120; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+                star.style.animationDelay = Math.random() * 4 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        generateStars();
+
+        // ===== SLIDE NAVIGATION =====
+        function changeSlide(direction) {
+            const newIndex = currentSlide + direction;
+            if (newIndex < 0 || newIndex >= totalSlides) return;
+            const currentEl = slides[currentSlide];
+            const nextEl = slides[newIndex];
+            currentEl.classList.remove('active');
+            currentEl.classList.add('exit-left');
+            nextEl.classList.remove('exit-left');
+            nextEl.classList.add('active');
+            slideHistory[newIndex] = true;
+            currentSlide = newIndex;
+            updateUI();
+        }
+
+        function goToSlide(index) {
+            if (index === currentSlide || index < 0 || index >= totalSlides) return;
+            const currentEl = slides[currentSlide];
+            const targetEl = slides[index];
+            currentEl.classList.remove('active');
+            currentEl.classList.add('exit-left');
+            targetEl.classList.remove('exit-left');
+            targetEl.classList.add('active');
+            slideHistory[index] = true;
+            currentSlide = index;
+            updateUI();
+        }
+
+        // ===== UI UPDATE =====
+        function updateUI() {
+            dots.forEach((dot, i) => {
+                dot.classList.remove('active', 'visited');
+                if (i === currentSlide) dot.classList.add('active');
+                else if (slideHistory[i]) dot.classList.add('visited');
+            });
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+            slideCounter.textContent = (currentSlide + 1) + ' / ' + totalSlides;
+            progressBar.style.width = ((currentSlide + 1) / totalSlides * 100) + '%';
+            slides[currentSlide].scrollTop = 0;
+            checkScrollButton();
+        }
+
+        // ===== DOT CLICKS =====
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => goToSlide(index));
+        });
+
+        // ===== KEYBOARD =====
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < totalSlides - 1) changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentSlide > 0) changeSlide(-1);
+            }
+        });
+
+        // ===== TOUCH =====
+        let touchStartX = 0;
+        const container = document.getElementById('slidesContainer');
+        container.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        container.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].screenX;
+            if (Math.abs(diff) > 60) {
+                if (diff > 0 && currentSlide < totalSlides - 1) changeSlide(1);
+                else if (diff < 0 && currentSlide > 0) changeSlide(-1);
+            }
+        }, { passive: true });
+
+        // ===== VOCAB REVEAL =====
+        function revealVocab(index) {
+            const el = document.getElementById('vocab-ans-' + index);
+            if (el) el.classList.toggle('revealed');
+        }
+
+        // ===== MCQ =====
+        function selectOption(element, selectedOpt, correctOpt, qIndex) {
+            const mcqItem = element.closest('.mcq-item');
+            const options = mcqItem.querySelectorAll('.option');
+            const answerEl = document.getElementById('mcq-ans-' + qIndex);
+            options.forEach(opt => opt.classList.remove('correct', 'incorrect'));
+            if (selectedOpt === correctOpt) {
+                element.classList.add('correct');
+                answerEl.classList.add('show');
+                element.style.animation = 'none';
+                void element.offsetHeight;
+                element.style.animation = 'correctPulse 0.5s ease-out';
+            } else {
+                element.classList.add('incorrect');
+                answerEl.classList.add('show');
+                options.forEach(opt => {
+                    if (opt.dataset.opt === correctOpt) opt.classList.add('correct');
+                });
+                element.style.animation = 'none';
+                void element.offsetHeight;
+                element.style.animation = 'shake 0.5s ease-out';
+            }
+        }
+
+        // ===== Q&A =====
+        function toggleQA(item) {
+            const answer = item.querySelector('.qa-answer');
+            const hint = item.querySelector('.toggle-hint');
+            const isOpen = answer.classList.contains('open');
+            answer.classList.toggle('open');
+            if (hint) {
+                hint.textContent = isOpen ? '👆 Click to reveal answer' : '👆 Click to hide answer';
+            }
+        }
+
+        // ===== SCROLL BUTTON =====
+        function checkScrollButton() {
+            const active = slides[currentSlide];
+            if (active.scrollTop > 50) scrollTopBtn.classList.add('show');
+            else scrollTopBtn.classList.remove('show');
+        }
+
+        slides.forEach(slide => {
+            slide.addEventListener('scroll', () => {
+                if (slide.classList.contains('active')) checkScrollButton();
+            });
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            slides[currentSlide].scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ===== INIT =====
+        updateUI();
+
+        // ===== PRESENTATION HOVER GLOW =====
+        const pres = document.getElementById('presentation');
+        pres.addEventListener('mouseenter', () => {
+            pres.style.boxShadow = '0 25px 70px rgba(0,0,0,0.85), 0 0 50px rgba(0,229,255,0.2)';
+        });
+        pres.addEventListener('mouseleave', () => {
+            pres.style.boxShadow = 'var(--shadow), var(--shadow-glow)';
+        });
+
+        console.log('🚀 Climbing · Sci-Fi Edition loaded');
+        console.log('Use arrow keys ← → to navigate.');
+    </script>
+
+</body>
+</html>
